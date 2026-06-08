@@ -1,0 +1,36 @@
+{
+  "name": "@semantic-matchers/vitest",
+  "version": "0.0.0",
+  "description": "Vitest adapter — same canonical matchers as Jest, different host wiring.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./register-types": {
+      "types": "./dist/register-types.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "vitest": ">=2.0.0"
+  },
+  "dependencies": {
+    "@semantic-matchers/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vitest": "^3.0.0"
+  },
+  "license": "MIT"
+}

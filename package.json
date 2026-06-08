@@ -1,0 +1,25 @@
+{
+  "name": "semantic-matchers",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Class-scoped custom matchers with prototype-chain resolution — framework-agnostic core with thin runner adapters.",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "yarn workspaces foreach -Apt run build",
+    "test": "yarn workspaces foreach -Apt run test",
+    "typecheck": "yarn workspaces foreach -Apt run typecheck",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.0.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.0.0"
+  },
+  "packageManager": "yarn@4.15.0",
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  }
+}
