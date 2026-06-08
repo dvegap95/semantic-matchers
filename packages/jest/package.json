@@ -1,6 +1,6 @@
 {
   "name": "@semantic-matchers/jest",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Jest adapter — installs semantic class matchers on top of expect.",
   "type": "module",
   "main": "./dist/index.js",
@@ -11,27 +11,54 @@
       "import": "./dist/index.js"
     },
     "./register-types": {
-      "types": "./dist/register-types.d.ts"
+      "types": "./dist/register-types.d.ts",
+      "import": "./dist/register-types.js"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepack": "yarn build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvegap95/semantic-matchers.git",
+    "directory": "packages/jest"
+  },
+  "bugs": {
+    "url": "https://github.com/dvegap95/semantic-matchers/issues"
+  },
+  "homepage": "https://github.com/dvegap95/semantic-matchers#readme",
+  "author": "dvegap95",
+  "license": "MIT",
+  "keywords": [
+    "jest",
+    "matchers",
+    "expect",
+    "testing",
+    "typescript",
+    "class-matchers"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "peerDependencies": {
     "expect": ">=29.0.0"
   },
   "dependencies": {
-    "@semantic-matchers/core": "workspace:*"
+    "@jest/expect-utils": "^29.7.0",
+    "@semantic-matchers/core": "workspace:*",
+    "jest-matcher-utils": "^29.7.0"
   },
   "devDependencies": {
+    "@semantic-matchers/conformance": "workspace:*",
     "expect": "^29.7.0",
     "typescript": "^5.8.3",
     "vitest": "^3.0.0"
-  },
-  "license": "MIT"
+  }
 }

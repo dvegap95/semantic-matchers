@@ -1,12 +1,6 @@
-/**
- * @semantic-matchers/jest
- *
- * @status Stub — implement createJestHost + installSemanticExpect per docs/IMPLEMENTATION_PLAN.md
- */
-
 import {createSemanticExpect} from '@semantic-matchers/core';
 import type {MatcherLibrary} from '@semantic-matchers/core';
-import type {ExpectHost} from '@semantic-matchers/core';
+import {createJestHost} from './createJestHost.js';
 
 export type InstallSemanticExpectOptions = {
   /** Expose the runner's original expect under this global name. */
@@ -17,14 +11,11 @@ export type InstallSemanticExpectOptions = {
   libraries?: MatcherLibrary;
 };
 
-/**
- * Placeholder — throws until Jest host adapter is implemented.
- */
-export function createJestHost(_nativeExpect: unknown): ExpectHost {
-  throw new Error(
-    '@semantic-matchers/jest: createJestHost is not implemented yet. See docs/IMPLEMENTATION_PLAN.md',
-  );
-}
+export {createJestHost} from './createJestHost.js';
+export {adaptMatcher} from './adaptMatcher.js';
+export {executeSemanticMatcher} from './executeMatcher.js';
+export {JestAssertionError} from './JestAssertionError.js';
+export type {JestMatcherContext, JestRawMatcherFn} from './adaptMatcher.js';
 
 export function installSemanticExpect(
   nativeExpect: unknown,
