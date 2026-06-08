@@ -1,0 +1,16 @@
+{
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "vitest.enable": true,
+  "vitest.configPath": "vitest.config.ts",
+  "vitest.shellApi": true,
+  "vitest.disableWorkspaceWarning": true,
+  "vitest.nodeEnv": {
+    "NODE_OPTIONS": "--require ./.pnp.cjs"
+  }
+}

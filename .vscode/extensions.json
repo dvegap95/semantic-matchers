@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "vitest.explorer",
+    "arcanis.vscode-zipfs",
+    "esbenp.prettier-vscode"
+  ]
+}

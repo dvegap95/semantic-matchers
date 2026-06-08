@@ -9,11 +9,17 @@
   "scripts": {
     "build": "yarn workspaces foreach -Apt run build",
     "test": "yarn workspaces foreach -Apt run test",
+    "test:all": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "yarn workspaces foreach -Apt run typecheck",
     "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "yarn build && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.5",
     "prettier": "^3.0.3",
     "typescript": "^5.8.3",
     "vitest": "^3.0.0"
