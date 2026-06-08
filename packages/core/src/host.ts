@@ -13,6 +13,9 @@ export type ExpectHost = {
   /** Runner's native expect function (used for builtins, asymmetric matchers, spies). */
   readonly nativeExpect: unknown;
 
+  /** Detect promises without core importing runner utilities. */
+  isPromise(value: unknown): value is Promise<unknown>;
+
   /** Invoke a matcher and translate result into runner assertion semantics. */
   runMatcher(options: RunMatcherOptions): unknown;
 

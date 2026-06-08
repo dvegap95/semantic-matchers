@@ -35,15 +35,36 @@ export function resolveClassMatcher(
   return undefined;
 }
 
+export function* resolveMatcherHierarchyForClass(
+  registry: MatcherRegistry,
+  name: string,
+  classConstructor?: ClassConstructor,
+): Generator<SemanticMatcherFn> {
+  for (const ctor of walkPrototypeChain(classConstructor)) {
+    const classMatchers = registry.class.get(ctor);
+    if (classMatchers?.[name]) {
+      yield classMatchers[name];
+    }
+  }
+  const globalMatcher = registry.global.matchers[name];
+  if (globalMatcher) {
+    yield globalMatcher;
+  }
+  for (const fallback of registry.global.fallbacks[name] ?? []) {
+    yield fallback;
+  }
+}
+
 export function resolveActiveMatcher(
   registry: MatcherRegistry,
   name: string,
   classConstructor?: ClassConstructor,
 ): SemanticMatcherFn | undefined {
-  return (
-    resolveClassMatcher(registry, name, classConstructor) ??
-    registry.global.matchers[name]
-  );
+  return resolveMatcherHierarchyForClass(
+    registry,
+    name,
+    classConstructor,
+  ).next().value;
 }
 
 export function resolveFallbackChain(
@@ -51,31 +72,59 @@ export function resolveFallbackChain(
   name: string,
   classConstructor?: ClassConstructor,
 ): Array<SemanticMatcherFn> {
-  const chain: Array<SemanticMatcherFn> = [];
-  const classMatcher = resolveClassMatcher(registry, name, classConstructor);
-  if (classMatcher) {
-    chain.push(classMatcher);
+  return [...resolveMatcherHierarchyForClass(registry, name, classConstructor)];
+}
+
+/**
+ * Builds a nested `baseMatcher` that delegates through the full hierarchy
+ * (subclass → superclass → global → fallback stack).
+ */
+export function resolveEncapsulatedFallbackMatcherForClass(
+  registry: MatcherRegistry,
+  matcherName: string,
+  classConstructor?: ClassConstructor,
+  parentMatcherIndex = 0,
+  matchersArray: Array<SemanticMatcherFn> = [
+    ...resolveMatcherHierarchyForClass(registry, matcherName, classConstructor),
+  ],
+): SemanticMatcherFn | undefined {
+  const baseMatcher = matchersArray[++parentMatcherIndex];
+  if (!baseMatcher) {
+    return undefined;
   }
-  const globalMatcher = registry.global.matchers[name];
-  if (globalMatcher && globalMatcher !== classMatcher) {
-    chain.push(globalMatcher);
-  }
-  chain.push(...(registry.global.fallbacks[name] ?? []));
-  return chain;
+
+  return function (this: {parentMatcherIndex?: number}, ...args: Array<unknown>) {
+    const index = this.parentMatcherIndex
+      ? this.parentMatcherIndex + 1
+      : parentMatcherIndex;
+    const context = {
+      ...this,
+      baseMatcher: resolveEncapsulatedFallbackMatcherForClass(
+        registry,
+        matcherName,
+        classConstructor,
+        index,
+        matchersArray,
+      ),
+      parentMatcherIndex: index,
+    };
+    return (baseMatcher as (...fnArgs: Array<unknown>) => unknown).call(
+      context,
+      ...args,
+    );
+  } as SemanticMatcherFn;
 }
 
 export function resolveAllMatchersForClass(
   registry: MatcherRegistry,
   classConstructor?: ClassConstructor,
 ): SemanticMatchersObject {
-  const merged = Object.create(null) as SemanticMatchersObject;
-  const chain = walkPrototypeChain(classConstructor).reverse();
-  for (const ctor of chain) {
-    const matchers = registry.class.get(ctor);
-    if (matchers) {
-      Object.assign(merged, matchers);
-    }
-  }
-  Object.assign(merged, registry.global.matchers);
-  return merged;
+  return new Proxy(Object.create(null) as SemanticMatchersObject, {
+    get(_target, prop) {
+      if (typeof prop === 'symbol') {
+        return undefined;
+      }
+      return resolveActiveMatcher(registry, String(prop), classConstructor);
+    },
+  });
 }

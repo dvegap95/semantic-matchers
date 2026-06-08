@@ -53,9 +53,19 @@ export function registerGlobalMatchers(
       const previous = registry.global.matchers[name];
       if (previous) {
         registry.global.fallbacks[name] ??= [];
-        registry.global.fallbacks[name].push(previous);
+        registry.global.fallbacks[name].unshift(previous);
       }
     }
   }
   Object.assign(registry.global.matchers, matchers);
+}
+
+/** Clears all registered matchers — use between tests for isolation. */
+export function resetMatcherRegistry(registry: MatcherRegistry): void {
+  registry.global.matchers = Object.create(null) as SemanticMatchersObject;
+  registry.global.fallbacks = Object.create(null) as Record<
+    string,
+    FallbackStack
+  >;
+  registry.class = new WeakMap();
 }

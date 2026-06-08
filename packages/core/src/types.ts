@@ -8,6 +8,12 @@
 export type MatcherResult = {
   pass: boolean;
   message: () => string;
+  /**
+   * Optional values for runners that render structured diffs (Vitest, Jest 30+).
+   * When omitted, hosts fall back to `actual` / first matcher argument.
+   */
+  actual?: unknown;
+  expected?: unknown;
 };
 
 export type AsyncMatcherResult = Promise<MatcherResult>;

@@ -1,6 +1,6 @@
 {
   "name": "@semantic-matchers/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Framework-agnostic class-scoped matcher registry, resolution, and dispatch.",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,16 +16,40 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.spec.json",
+    "test": "vitest run",
+    "prepack": "yarn build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvegap95/semantic-matchers.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/dvegap95/semantic-matchers/issues"
+  },
+  "homepage": "https://github.com/dvegap95/semantic-matchers#readme",
+  "author": "dvegap95",
+  "license": "MIT",
+  "keywords": [
+    "jest",
+    "vitest",
+    "matchers",
+    "expect",
+    "testing",
+    "typescript",
+    "class-matchers"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "typescript": "^5.8.3",
     "vitest": "^3.0.0"
-  },
-  "license": "MIT"
+  }
 }
