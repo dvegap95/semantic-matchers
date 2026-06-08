@@ -2,75 +2,138 @@
 
 **Class-scoped custom matchers** with prototype-chain resolution and composable `baseMatcher` — extracted from the [jest-type-matchers-prototype](https://github.com/dvegap95/jest-type-matchers-prototype) experiment.
 
-This repo is **framework-agnostic at the core**: matcher libraries (domain entities, MUI page objects, etc.) depend only on `@semantic-matchers/core`. Test runners are wired through **thin adapters** (`@semantic-matchers/jest`, `@semantic-matchers/vitest`).
+Matcher libraries depend only on **`@semantic-matchers/core`**. Test runners are wired through thin adapters (`@semantic-matchers/jest`, `@semantic-matchers/vitest`).
 
-## Why
+## Install
 
-Global `expect.extend` registers matchers for every value. Domain-rich tests need assertions aligned with **type semantics** — identity vs email vs display representation — without duplicating matcher logic per test framework.
+```bash
+# Jest
+yarn add -D @semantic-matchers/jest expect
+
+# Vitest
+yarn add -D @semantic-matchers/vitest vitest
+
+# Matcher pack (no runner)
+yarn add @semantic-matchers/core
+```
+
+## Quick start (Jest)
+
+**`jest.setup.ts`**
+
+```typescript
+import '@semantic-matchers/jest/register-types';
+import expect from 'expect';
+import {installSemanticExpect} from '@semantic-matchers/jest';
+
+installSemanticExpect(expect, {
+  global: true,
+  exposeOriginalAs: 'jestExpect', // optional escape hatch
+});
+```
+
+**Register class matchers**
+
+```typescript
+import {defineClassMatchers} from '@semantic-matchers/core';
+
+class User {
+  email = '';
+}
+
+export const userMatchers = defineClassMatchers(User, {
+  toHaveEmail(actual, expected: string) {
+    const pass = actual.email === expected;
+    return {
+      pass,
+      message: () =>
+        pass
+          ? `expected user not to have email ${expected}`
+          : `expected user to have email ${expected}, received ${actual.email}`,
+    };
+  },
+});
+
+// In setup, after installSemanticExpect:
+expect.extend(userMatchers.matchers, userMatchers.Class);
+```
+
+**Augment types** (in your app or matcher pack):
+
+```typescript
+declare module '@semantic-matchers/core' {
+  interface SemanticClassMatchers<R, T> {
+    toHaveEmail(expected: string): R;
+  }
+}
+```
+
+**Test**
+
+```typescript
+const user = new User();
+user.email = 'alice@example.com';
+
+expect(user).toHaveEmail('alice@example.com');
+await expect(Promise.resolve(user)).resolves.toHaveEmail('alice@example.com');
+```
+
+## Quick start (Vitest)
+
+```typescript
+import '@semantic-matchers/vitest/register-types';
+import {installVitestSemanticExpect} from '@semantic-matchers/vitest';
+
+installVitestSemanticExpect(); // uses vitest's built-in expect
+```
+
+Same `defineClassMatchers` / `expect.extend` API as Jest.
+
+**Prefer Vitest for failure output:** return optional `actual` and `expected` from matchers — the Vitest adapter throws `VitestExtendError` with those fields so Vitest renders separated diffs (message + expected/received). Jest gets the same fields on `JestAssertionError` but does not diff them today.
+
+See [examples/vitest](./examples/vitest) and [examples/jest](./examples/jest).
 
 ## Packages
 
-| Package | Role | Depends on |
-|---------|------|------------|
-| `@semantic-matchers/core` | Registry, resolution, proxy dispatch, canonical matcher types | nothing |
-| `@semantic-matchers/jest` | Jest `expect` host adapter + type bridge | `core`, `expect` (peer) |
-| `@semantic-matchers/vitest` | Vitest adapter (same matchers, different host) | `core`, `vitest` (peer) |
-
-**Matcher packs** (future, separate repos or `examples/`):
-
-| Example | Role |
+| Package | Role |
 |---------|------|
-| `@semantic-matchers/mui` | Page-object matchers for MUI components — **core only** |
+| `@semantic-matchers/core` | Registry, resolution, proxy, canonical types |
+| `@semantic-matchers/jest` | `installSemanticExpect`, Jest host adapter |
+| `@semantic-matchers/vitest` | `installVitestSemanticExpect`, Vitest host with actual/expected diffs |
+| `@semantic-matchers/conformance` | Shared A/B/C/D hierarchy tests (dev-only) |
 
-## Quick mental model
+## Publishing
 
+This repo uses [Changesets](https://github.com/changesets/changesets). See **[docs/PUBLISHING.md](./docs/PUBLISHING.md)** for a step-by-step npm guide (login, versioning, first release, CI).
+
+```bash
+yarn changeset          # describe changes
+yarn version-packages   # bump versions + changelogs
+yarn release            # build + npm publish
 ```
-┌─────────────────────────────────────────────────────────┐
-│  Your library (MUI page objects, domain entities)        │
-│  defineClassMatchers(Button, { toHaveLabel … })          │
-│  depends on: @semantic-matchers/core ONLY                │
-└──────────────────────────┬──────────────────────────────┘
-                           │ MatcherLibrary
-                           ▼
-┌─────────────────────────────────────────────────────────┐
-│  @semantic-matchers/jest  OR  @semantic-matchers/vitest  │
-│  installSemanticExpect({ libraries: [muiMatchers] })     │
-│  translates host context ↔ semantic context (once)       │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-                           ▼
-                    Jest / Vitest test run
-```
-
-**You do not write separate matchers for Jest and Vitest.** Adapters translate; libraries define once.
-
-## Status
-
-**Scaffold / planning phase.** Core has working registry + resolver + proxy stubs; adapters throw until implemented.
-
-| Doc | Purpose |
-|-----|---------|
-| [docs/STRATEGY.md](./docs/STRATEGY.md) | Product strategy, phasing, MUI use case |
-| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Layer boundaries and data flow |
-| [docs/HOST_INTERFACE.md](./docs/HOST_INTERFACE.md) | Contract for Jest/Vitest adapters |
-| [docs/MATCHER_AUTHORING.md](./docs/MATCHER_AUTHORING.md) | **Canonical interface** — define once, run anywhere |
-| [docs/IMPLEMENTATION_PLAN.md](./docs/IMPLEMENTATION_PLAN.md) | Step-by-step for implementation agent |
-| [AGENTS.md](./AGENTS.md) | Cursor agent entry point |
-
-## Prototype reference
-
-Implementation source of truth for behavior (not structure):
-
-- Repo: `../jest-type-matchers-prototype` (local) or [dvegap95/jest-type-matchers-prototype](https://github.com/dvegap95/jest-type-matchers-prototype)
-- Key files: `packages/expect/src/matcherResolvers.ts`, `jestMatchersObject.ts`, `index.ts`, `typeUtils.ts`
 
 ## Development
 
 ```bash
 yarn install
-yarn workspace @semantic-matchers/core test
+yarn test:all      # conformance + unit tests from repo root
+yarn test:watch    # watch mode (Vitest extension uses the same config)
 yarn build
 ```
+
+**Editor test explorer:** install the [Vitest extension](https://marketplace.visualstudio.com/items?itemName=vitest.explorer), reload the window, open the Testing sidebar. See [docs/TESTING.md](./docs/TESTING.md) if no tests appear.
+
+## Docs
+
+| Doc | Purpose |
+|-----|---------|
+| [docs/PUBLISHING.md](./docs/PUBLISHING.md) | **npm publish walkthrough** |
+| [docs/STRATEGY.md](./docs/STRATEGY.md) | Goals and phasing |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Layer boundaries |
+| [docs/HOST_INTERFACE.md](./docs/HOST_INTERFACE.md) | Adapter contract |
+| [docs/MATCHER_AUTHORING.md](./docs/MATCHER_AUTHORING.md) | Define matchers once |
+| [docs/IMPLEMENTATION_PLAN.md](./docs/IMPLEMENTATION_PLAN.md) | Implementation checklist |
+| [AGENTS.md](./AGENTS.md) | Agent entry point |
 
 ## License
 

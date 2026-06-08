@@ -24,6 +24,8 @@ const toHaveLabel: SemanticMatcherFn<HTMLElement, [string]> = function (
       pass
         ? `expected element not to have label ${expected}`
         : `expected label ${expected}, got ${actual}`,
+    actual,
+    expected,
   };
 };
 ```
@@ -42,6 +44,21 @@ toMatchIdentity(received, expected) {
 ```
 
 `baseMatcher` is wired by core + adapter — library code uses it the same on Jest and Vitest.
+
+### Failure output (Vitest vs Jest)
+
+Return optional `actual` and `expected` on `MatcherResult`. Vitest renders them as a separated diff automatically; Jest stores them on `JestAssertionError` but does not diff them yet.
+
+```typescript
+return {
+  pass: false,
+  message: () => 'expected label …',
+  actual: receivedLabel,
+  expected,
+};
+```
+
+Use `@semantic-matchers/vitest` in Vitest projects when you want this output without duplicating matchers.
 
 ### Using host utilities (optional)
 
