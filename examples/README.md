@@ -1,11 +1,23 @@
 # Examples
 
-Planned examples (Phase 4):
+Runnable patterns for registering class-scoped matchers. Both approaches use the **same types** (`SemanticClassMatcherMap`) and **same runtime behavior** — only the registration style differs.
 
-| Directory | Purpose |
-|-----------|---------|
-| `mui-matchers/` | Matcher pack depending only on `@semantic-matchers/core` |
-| `jest-app/` | Jest consumer with `installSemanticExpect` |
-| `vitest-app/` | Same matchers, Vitest setup |
+| Directory | What it shows |
+|-----------|----------------|
+| [`jest/`](./jest/) | Jest setup — **`expect.extend`** and **`defineClassMatchers`** |
+| [`jest/classHierarchy.example.ts`](./jest/classHierarchy.example.ts) | Multi-class inheritance (A → B → C) + global matchers |
+| [`vitest/`](./vitest/) | Same matchers with Vitest setup (both approaches) |
+| [`mui-matchers/`](./mui-matchers/) | Sketch for a publishable matcher pack |
 
-See [docs/MATCHER_AUTHORING.md](../docs/MATCHER_AUTHORING.md) for the MUI / page object pattern.
+## Quick comparison
+
+```typescript
+// A — prototype style (app tests, one-off matchers)
+expect.extend(userMatchers, User);
+
+// B — matcher pack (libraries, bulk install, npm packages)
+installSemanticExpect(nativeExpect, { libraries: userMatcherPack });
+// or: expect.extend(bundle.matchers, bundle.Class);
+```
+
+See [docs/MATCHER_AUTHORING.md](../docs/MATCHER_AUTHORING.md) for the full authoring guide.

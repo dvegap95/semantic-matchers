@@ -32,41 +32,17 @@ installSemanticExpect(expect, {
 });
 ```
 
-**Register class matchers**
+**Register class matchers** — either approach:
 
 ```typescript
-import {defineClassMatchers} from '@semantic-matchers/core';
+// A — expect.extend (app tests, prototype style)
+semanticExpect.extend(userMatchers, User);
 
-class User {
-  email = '';
-}
-
-export const userMatchers = defineClassMatchers(User, {
-  toHaveEmail(actual, expected: string) {
-    const pass = actual.email === expected;
-    return {
-      pass,
-      message: () =>
-        pass
-          ? `expected user not to have email ${expected}`
-          : `expected user to have email ${expected}, received ${actual.email}`,
-    };
-  },
-});
-
-// In setup, after installSemanticExpect:
-expect.extend(userMatchers.matchers, userMatchers.Class);
+// B — matcher pack (libraries, bulk install)
+installSemanticExpect(expect, { libraries: userMatcherPack });
 ```
 
-**Augment types** (in your app or matcher pack):
-
-```typescript
-declare module '@semantic-matchers/core' {
-  interface SemanticClassMatchers<R, T> {
-    toHaveEmail(expected: string): R;
-  }
-}
-```
+See [`examples/jest/`](./examples/jest/) for both patterns side by side.
 
 **Test**
 

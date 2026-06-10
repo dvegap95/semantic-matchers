@@ -71,22 +71,73 @@ const pass = host.equals?.(received, expected) ?? Object.is(received, expected);
 
 Document which `host` keys your pack requires. Adapters guarantee them on Jest/Vitest.
 
-## defineClassMatchers
+## Primary API — `expect.extend`
+
+Same as the prototype. Register matchers in setup — no helper required:
+
+```typescript
+import { installSemanticExpect } from '@semantic-matchers/jest';
+import expect from 'expect';
+import { User, userMatchers } from './userMatchers';
+
+const { expect: semanticExpect } = installSemanticExpect(expect, { global: true });
+
+semanticExpect.extend(userMatchers, User);
+semanticExpect.extend(otherMatchers, OtherClass);
+semanticExpect.extend(globalMatchers); // no Class → global scope + fallback stack
+```
+
+Matcher functions use the familiar `(actual, …expected)` shape with `{ pass, message }`.
+
+### Typing — class-keyed map (prototype style)
+
+```typescript
+import type { ExtendedMatchersForClass, MatchersObject } from '@semantic-matchers/core';
+
+class User { email = ''; }
+
+export const userMatchers: MatchersObject<User> = {
+  toHaveEmail(actual, expected: string) { /* … */ },
+};
+
+declare module '@semantic-matchers/core' {
+  // Global matchers (expect.extend(rawMatchers))
+  interface SemanticMatchers<R> {
+    toHaveColor(expected: string): R;
+  }
+
+  // Per-class matchers (expect.extend(matchers, User))
+  interface SemanticClassMatcherMap<R> {
+    User: ExtendedMatchersForClass<User, R, {
+      toHaveEmail(expected: string): R;
+    }>;
+    Admin: ExtendedMatchersForClass<Admin, R, {
+      toHaveRole(expected: string): R;
+    }>;
+  }
+}
+```
+
+`SemanticClassMatcherMap` keys are **instance types** (`User`, `A`, `B`, …) — same as prototype `ClassMatchers<R> { A: …; B: … }`.  
+Aliases: `ClassMatchers<R>`, `Matchers<R>`.
+
+See [`examples/jest/classHierarchy.example.ts`](../examples/jest/classHierarchy.example.ts) for inheritance + fallback typing.
+
+## defineClassMatchers (optional — matcher packs)
+
+For npm packages that export a bundle:
 
 ```typescript
 import { defineClassMatchers, defineMatcherLibrary } from '@semantic-matchers/core';
 
-class MuiButton {
-  constructor(readonly root: HTMLElement) {}
-}
-
 const buttonMatchers = defineClassMatchers(MuiButton, {
-  toHaveLabel(ctx, btn, label) { /* … */ },
-  toBeDisabled(ctx, btn) { /* … */ },
+  toHaveLabel(_, btn, label) { /* … */ },
 });
 
 export const muiMatchers = defineMatcherLibrary([buttonMatchers]);
 ```
+
+Consumers can still use `expect.extend(muiMatchers[0].matchers, muiMatchers[0].Class)` or pass `libraries: [muiMatchers]` to `installSemanticExpect`.
 
 ## Typing — augment core, not Jest
 
@@ -95,12 +146,16 @@ export const muiMatchers = defineMatcherLibrary([buttonMatchers]);
 import '@semantic-matchers/core';
 
 declare module '@semantic-matchers/core' {
-  interface SemanticClassMatchers<R, T> {
-    toHaveLabel(expected: string): R;
-    toBeDisabled(): R;
+  interface SemanticClassMatcherMap<R> {
+    MuiButton: ExtendedMatchersForClass<MuiButton, R, {
+      toHaveLabel(expected: string): R;
+      toBeDisabled(): R;
+    }>;
   }
 }
 ```
+
+Legacy: augment `SemanticClassMatchers<R, T>` directly (still supported).
 
 Consumers import:
 

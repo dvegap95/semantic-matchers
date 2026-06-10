@@ -1,4 +1,5 @@
 export * from './types.js';
+export * from './types/classMatchers.js';
 export * from './types/inference.js';
 export * from './defineMatchers.js';
 export * from './registry.js';

@@ -1,10 +1,20 @@
+import type {
+  MatchersForInstance,
+  SemanticMatchers,
+} from './classMatchers.js';
 import type {SemanticClassMatchers, SemanticGlobalMatchers} from '../types.js';
 
 /**
  * Matchers available on `expect(actual)` for a given instance type.
- * Libraries augment `SemanticClassMatchers`; adapters merge host builtins via `SemanticGlobalMatchers`.
+ *
+ * Augment:
+ * - `SemanticMatchers<R>` — global matchers (`expect.extend(rawMatchers)`)
+ * - `SemanticClassMatcherMap<R>` — per-class (`expect.extend(matchers, User)`)
+ * - `SemanticClassMatchers<R, T>` — legacy instance augmentation (still supported)
  */
-export type MatcherSurface<R, T> = SemanticClassMatchers<R, T> &
+export type MatcherSurface<R, T> = SemanticMatchers<R> &
+  MatchersForInstance<T, R> &
+  SemanticClassMatchers<R, T> &
   SemanticGlobalMatchers<R, T> & {
     [matcherName: string]: (...args: Array<unknown>) => R;
   };
