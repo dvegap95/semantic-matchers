@@ -1,10 +1,19 @@
 # semantic-matchers
 
+
+[![CI](https://github.com/dvegap95/semantic-matchers/actions/workflows/ci.yml/badge.svg)](https://github.com/dvegap95/semantic-matchers/actions/workflows/ci.yml)
+[![npm core](https://img.shields.io/npm/v/@semantic-matchers/core?label=%40semantic-matchers%2Fcore)](https://www.npmjs.com/package/@semantic-matchers/core)
+[![npm jest](https://img.shields.io/npm/v/@semantic-matchers/jest?label=%40semantic-matchers%2Fjest)](https://www.npmjs.com/package/@semantic-matchers/jest)
+[![npm vitest](https://img.shields.io/npm/v/@semantic-matchers/vitest?label=%40semantic-matchers%2Fvitest)](https://www.npmjs.com/package/@semantic-matchers/vitest)
+[![License: MIT](https://img.shields.io/github/license/dvegap95/semantic-matchers)](LICENSE)
+
 **Class-scoped custom matchers** with prototype-chain resolution and composable `baseMatcher` — extracted from the [jest-type-matchers-prototype](https://github.com/dvegap95/jest-type-matchers-prototype) experiment.
 
 Matcher libraries depend only on **`@semantic-matchers/core`**. Test runners are wired through thin adapters (`@semantic-matchers/jest`, `@semantic-matchers/vitest`).
 
 ## Install
+
+Published on [npm](https://www.npmjs.com/search?q=%40semantic-matchers) as **@semantic-matchers/*** (see table below).
 
 ```bash
 # Jest
@@ -73,9 +82,9 @@ See [examples/vitest](./examples/vitest) and [examples/jest](./examples/jest).
 
 | Package | Role |
 |---------|------|
-| `@semantic-matchers/core` | Registry, resolution, proxy, canonical types |
-| `@semantic-matchers/jest` | `installSemanticExpect`, Jest host adapter |
-| `@semantic-matchers/vitest` | `installVitestSemanticExpect`, Vitest host with actual/expected diffs |
+| [`@semantic-matchers/core`](https://www.npmjs.com/package/@semantic-matchers/core) | Registry, resolution, proxy, canonical types |
+| [`@semantic-matchers/jest`](https://www.npmjs.com/package/@semantic-matchers/jest) | `installSemanticExpect`, Jest host adapter |
+| [`@semantic-matchers/vitest`](https://www.npmjs.com/package/@semantic-matchers/vitest) | `installVitestSemanticExpect`, Vitest host with actual/expected diffs |
 | `@semantic-matchers/conformance` | Shared A/B/C/D hierarchy tests (dev-only) |
 
 ## Publishing
