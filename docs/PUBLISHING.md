@@ -105,12 +105,19 @@ First public release is usually **`0.1.0`** (minor from `0.0.0`) or **`1.0.0`** 
 
 Before `yarn release`:
 
-- [ ] All tests pass: `yarn test`
-- [ ] Build succeeds: `yarn build`
+- [ ] All checks pass: `yarn typecheck && yarn test && yarn build`
 - [ ] `npm whoami` works
-- [ ] At least one changeset exists (or run `yarn changeset` first)
-- [ ] Versions bumped via `yarn version-packages`
+- [ ] Decide version strategy (see below)
 - [ ] Git tag / GitHub release (optional but recommended)
+
+### Version strategy for first publish
+
+Packages are currently at **`0.1.0`**. You have two options:
+
+1. **Publish `0.1.0` as-is** — skip `yarn version-packages`, run `yarn release` directly (no version bump needed).
+2. **Use the included changeset** — run `yarn version-packages` to bump to **`0.2.0`** (minor) with a changelog entry, then `yarn release`.
+
+The changeset at `.changeset/initial-public-release.md` documents the initial public release. Delete it if you prefer option 1.
 
 ### Dry run (see what would ship)
 
@@ -120,6 +127,8 @@ yarn workspace @semantic-matchers/core npm publish --dry-run
 yarn workspace @semantic-matchers/jest npm publish --dry-run
 yarn workspace @semantic-matchers/vitest npm publish --dry-run
 ```
+
+Each package includes a `README.md` in its `files` list — npm will display it on the package page.
 
 This repo sets `npmPublishRegistry` to `https://registry.npmjs.org` in `.yarnrc.yml` (required — Yarn defaults to its own registry otherwise).
 
@@ -163,9 +172,10 @@ npm install @semantic-matchers/core
 | `You cannot publish over the previously published versions` | Run `yarn version-packages` to bump version |
 | `ENEEDAUTH` | Run `npm login` or set `NPM_TOKEN` |
 | Package missing `dist/` | Run `yarn build` before publish (`prepack` also builds) |
+| Typecheck can't find `@semantic-matchers/core` | Jest/Vitest use `tsconfig.typecheck.json` with path mappings to workspace source; `yarn build` must succeed before publish (build `tsconfig.json` resolves via `dist/`) |
 
 ---
 
 ## Package README on npm
 
-npm shows each package's `description` and, if present, a `README.md` in the package directory. Add short `packages/*/README.md` files later if you want richer npm pages; the root README links to the monorepo docs.
+Each publishable package has a `packages/*/README.md` listed in its `files` field. npm displays this on the package page alongside the `description` and `keywords` from `package.json`.
