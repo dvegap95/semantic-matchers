@@ -1,7 +1,11 @@
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import type {ExpectHost, RunMatcherOptions} from '@semantic-matchers/core';
-import {adaptMatcher, executeSemanticMatcher} from '@semantic-matchers/jest';
+import type {ExpectHost, RunMatcherOptions, SemanticMatcherFn} from '@semantic-matchers/core';
+import {
+  adaptMatcher,
+  executeSemanticMatcher,
+  type AssertionFailure,
+} from '@semantic-matchers/jest';
 import {VitestExtendError} from './VitestExtendError.js';
 
 function isPromiseLike(value: unknown): value is Promise<unknown> {
@@ -39,7 +43,7 @@ export function createVitestHost(nativeExpect: unknown): ExpectHost {
       };
     },
     runMatcher(options: RunMatcherOptions) {
-      return executeSemanticMatcher(options, failure =>
+      return executeSemanticMatcher(options, (failure: AssertionFailure) =>
         new VitestExtendError(
           failure.message,
           failure.actual,
@@ -47,7 +51,7 @@ export function createVitestHost(nativeExpect: unknown): ExpectHost {
         ),
       );
     },
-    registerGlobalMatchers(matchers) {
+    registerGlobalMatchers(matchers: Record<string, SemanticMatcherFn>) {
       const adapted = Object.fromEntries(
         Object.entries(matchers).map(([name, matcher]) => [
           name,

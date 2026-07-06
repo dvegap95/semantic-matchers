@@ -16,6 +16,7 @@ export {adaptMatcher} from './adaptMatcher.js';
 export {executeSemanticMatcher} from './executeMatcher.js';
 export {JestAssertionError} from './JestAssertionError.js';
 export type {JestMatcherContext, JestRawMatcherFn} from './adaptMatcher.js';
+export type {AssertionFailure, CreateAssertionError} from './executeMatcher.js';
 
 export function installSemanticExpect(
   nativeExpect: unknown,

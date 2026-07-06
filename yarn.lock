@@ -762,6 +762,7 @@ __metadata:
     "@jest/expect-utils": "npm:^29.7.0"
     "@semantic-matchers/conformance": "workspace:*"
     "@semantic-matchers/core": "workspace:*"
+    "@types/node": "npm:^22.15.0"
     expect: "npm:^29.7.0"
     jest-matcher-utils: "npm:^29.7.0"
     typescript: "npm:^5.8.3"
@@ -779,6 +780,7 @@ __metadata:
     "@semantic-matchers/conformance": "workspace:*"
     "@semantic-matchers/core": "workspace:*"
     "@semantic-matchers/jest": "workspace:*"
+    "@types/node": "npm:^22.15.0"
     jest-matcher-utils: "npm:^29.7.0"
     typescript: "npm:^5.8.3"
     vitest: "npm:^3.0.0"
@@ -856,6 +858,15 @@ __metadata:
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
   checksum: 10c0/3b190bb0410047d489c49bbaab592d2e6630de6a50f00ba3d7d513d59401d279972a8f5a598b5bb8ddc1702f8a2f4ec57a65d93852f9c329639738e7053637d1
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.15.0":
+  version: 22.20.0
+  resolution: "@types/node@npm:22.20.0"
+  dependencies:
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/55d78223205bd5f81f043d71b7a5c8d8854b9ef44ef81291680943adb27fa5ba1f092658c87183d5bc8cf6baf6a57b81dad966eb3afa452cc301a615b6d9b20e
   languageName: node
   linkType: hard
 
@@ -2345,6 +2356,13 @@ __metadata:
   version: 7.24.6
   resolution: "undici-types@npm:7.24.6"
   checksum: 10c0/d9cd8befb643ac904615c280a095ba4240531f6bb4a5e75a22a7483630ca8d3f1016d2ab6ace6ceda1f63b3a2db2fe037fafe121d6917a0187573aa548ff78ca
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
   languageName: node
   linkType: hard
 

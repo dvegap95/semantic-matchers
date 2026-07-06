@@ -1,7 +1,8 @@
 {
   "name": "@semantic-matchers/core",
   "version": "0.1.0",
-  "description": "Framework-agnostic class-scoped matcher registry, resolution, and dispatch.",
+  "description": "Framework-agnostic class-scoped custom matchers with prototype-chain resolution for Jest, Vitest, and custom test hosts.",
+  "sideEffects": false,
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -43,7 +44,11 @@
     "expect",
     "testing",
     "typescript",
-    "class-matchers"
+    "class-matchers",
+    "custom-matchers",
+    "prototype",
+    "domain-driven-testing",
+    "semantic-matchers"
   ],
   "publishConfig": {
     "access": "public"

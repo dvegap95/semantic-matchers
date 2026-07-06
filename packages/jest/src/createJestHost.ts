@@ -1,6 +1,10 @@
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import type {ExpectHost, RunMatcherOptions} from '@semantic-matchers/core';
+import type {
+  ExpectHost,
+  RunMatcherOptions,
+  SemanticMatcherFn,
+} from '@semantic-matchers/core';
 import {adaptMatcher} from './adaptMatcher.js';
 import {executeSemanticMatcher} from './executeMatcher.js';
 import {JestAssertionError} from './JestAssertionError.js';
@@ -49,7 +53,7 @@ export function createJestHost(nativeExpect: unknown): ExpectHost {
         return error;
       });
     },
-    registerGlobalMatchers(matchers) {
+    registerGlobalMatchers(matchers: Record<string, SemanticMatcherFn>) {
       const adapted = Object.fromEntries(
         Object.entries(matchers).map(([name, matcher]) => [
           name,
