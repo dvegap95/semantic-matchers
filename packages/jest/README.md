@@ -1,6 +1,19 @@
 # @semantic-matchers/jest
 
-Jest plugin for **semantic class-scoped matchers** — install on `expect` with full TypeScript inference.
+**Customize expect with class-scoped matchers for Jest.** Type-specific assertion logic per class, resolved on the prototype chain — chainable with `.not`, `.resolves`, and `.rejects`.
+
+## Problem this solves
+
+You might be looking for:
+
+- **Class-based / class-scoped matchers** — different `toX()` behavior per domain type
+- **Type-specific custom matchers** without `instanceof` branches in every matcher
+- **Expect customization** beyond global `expect.extend`
+- **Chainable custom assertions** (`.not`, `.resolves`, `.rejects`) on class instances
+- **Page-object or domain matchers** — `expect(user).toHaveEmail()`, `expect(button).toBeVisible()`
+- **Polymorphic / dynamic dispatch** for Jest assertions
+
+Jest matchers are global by default. This adapter scopes them to classes with full TypeScript inference.
 
 ## Install
 
@@ -35,6 +48,7 @@ user.email = 'alice@example.com';
 
 expect(user).toHaveEmail('alice@example.com');
 await expect(Promise.resolve(user)).resolves.toHaveEmail('alice@example.com');
+expect(user).not.toHaveEmail('bob@example.com');
 ```
 
 ## Docs

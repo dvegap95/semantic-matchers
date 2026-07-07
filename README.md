@@ -1,15 +1,40 @@
 # semantic-matchers
 
-
 [![CI](https://github.com/dvegap95/semantic-matchers/actions/workflows/ci.yml/badge.svg)](https://github.com/dvegap95/semantic-matchers/actions/workflows/ci.yml)
 [![npm core](https://img.shields.io/npm/v/@semantic-matchers/core?label=%40semantic-matchers%2Fcore)](https://www.npmjs.com/package/@semantic-matchers/core)
 [![npm jest](https://img.shields.io/npm/v/@semantic-matchers/jest?label=%40semantic-matchers%2Fjest)](https://www.npmjs.com/package/@semantic-matchers/jest)
 [![npm vitest](https://img.shields.io/npm/v/@semantic-matchers/vitest?label=%40semantic-matchers%2Fvitest)](https://www.npmjs.com/package/@semantic-matchers/vitest)
 [![License: MIT](https://img.shields.io/github/license/dvegap95/semantic-matchers)](LICENSE)
 
-**Class-scoped custom matchers** with prototype-chain resolution and composable `baseMatcher` — extracted from the [jest-type-matchers-prototype](https://github.com/dvegap95/jest-type-matchers-prototype) experiment.
+**Class-scoped, type-specific custom matchers for Jest and Vitest** — customize `expect` with per-class assertion logic, chainable via `.not`, `.resolves`, and `.rejects`.
 
-Matcher libraries depend only on **`@semantic-matchers/core`**. Test runners are wired through thin adapters (`@semantic-matchers/jest`, `@semantic-matchers/vitest`).
+## Why use this?
+
+People find this problem under lots of names. You might be searching for:
+
+- *"Jest custom matchers per class"* / *"class-based matchers"*
+- *"Type-specific matchers in Jest"* / *"matchers based on instance type"*
+- *"How to customize expect in Jest"* / *"extend expect for domain objects"*
+- *"Polymorphic matchers in Jest"* / *"dynamic dispatch for custom assertions"*
+- *"Chainable custom matchers"* with `.not` / `.resolves` / `.rejects`
+- *"Page object matchers"* / *"assertions for class instances"*
+- *"Tired of `instanceof` / `typeof` checks inside `expect.extend`?"*
+
+Jest's `expect.extend` is **global**: one matcher name → one function for every value. Domain models (`User`, `Admin`, page objects, UI components) need **different assertion logic per class** — but you shouldn't copy-paste matchers or stuff type switches into every matcher body.
+
+**semantic-matchers** adds **class-scoped dispatch** on top of expect:
+
+- Register matchers on a **class** — `User`, `MuiButton`, your page-object base, etc.
+- `expect(instance)` picks the right matcher set via the **prototype chain** (subclasses inherit and override)
+- **Chainable** like built-in expect: `.not`, `.resolves`, `.rejects` keep working
+- **`baseMatcher`** — wrap or override a matcher without breaking globals
+- Author matcher packs once on `@semantic-matchers/core`; wire **Jest** or **Vitest** with a thin adapter
+
+Also called: polymorphic matchers, type-aware matchers, multiple dispatch for assertions, class-scoped `expect.extend`.
+
+Matcher libraries depend only on **`@semantic-matchers/core`**. Test runners are wired through `@semantic-matchers/jest` or `@semantic-matchers/vitest`.
+
+Extracted from the [jest-type-matchers-prototype](https://github.com/dvegap95/jest-type-matchers-prototype) experiment.
 
 ## Install
 

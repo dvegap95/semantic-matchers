@@ -1,8 +1,14 @@
 # @semantic-matchers/core
 
-Framework-agnostic **class-scoped custom matchers** with prototype-chain resolution and composable `baseMatcher`.
+**Framework-agnostic class-scoped matchers** for expect customization. Define type-specific, instance-based assertions once — no Jest or Vitest imports in your matcher library.
 
-Use this package when you author matcher libraries that should work with any test runner. Runner wiring lives in `@semantic-matchers/jest` or `@semantic-matchers/vitest`.
+## Problem this solves
+
+- **Matcher packs per class** — `User`, `Admin`, page objects, component wrappers
+- **Type-specific / class-based matchers** without runner lock-in
+- **Prototype-chain dispatch** — subclasses inherit and override matchers
+- **`baseMatcher` composition** — extend assertions without global `expect.extend` conflicts
+- Ship a **matcher library** consumers wire with `@semantic-matchers/jest` or `@semantic-matchers/vitest`
 
 ## Install
 
@@ -15,7 +21,7 @@ yarn add @semantic-matchers/core
 ## Quick start
 
 ```typescript
-import {defineClassMatchers, defineMatchers} from '@semantic-matchers/core';
+import {defineClassMatchers} from '@semantic-matchers/core';
 
 export const userMatchers = defineClassMatchers(User, {
   toHaveEmail(received, email: string) {
@@ -33,8 +39,8 @@ export const userMatchers = defineClassMatchers(User, {
 
 ## API highlights
 
-- `defineMatchers` / `defineClassMatchers` — declare matchers with TypeScript inference
-- `createSemanticExpect` — build a runner-agnostic expect proxy (used by adapters)
+- `defineMatchers` / `defineClassMatchers` — type-inferred matcher definitions
+- `createSemanticExpect` — runner-agnostic expect proxy (used by adapters)
 - `MatcherLibrary` — bulk-register matcher packs by class
 
 ## Docs

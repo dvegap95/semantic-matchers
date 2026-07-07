@@ -1,8 +1,14 @@
 # @semantic-matchers/vitest
 
-Vitest plugin for **semantic class-scoped matchers** — same API as Jest with Vitest-native failure diffs.
+**Customize expect with class-scoped matchers for Vitest.** Same type-specific, class-based dispatch as the Jest adapter — chainable modifiers plus native expected/received diffs.
 
-Matchers can return optional `actual` and `expected` fields; the Vitest adapter throws `VitestExtendError` so Vitest renders separated expected/received output.
+## Problem this solves
+
+- **Vitest custom matchers per class** / **type-specific matchers**
+- **Expect customization** for domain objects and page objects
+- **Chainable assertions** on instances — `.not`, `.resolves`, `.rejects`
+- **Polymorphic matchers** without manual type switching in `expect.extend`
+- Richer failure output when matchers return `actual` / `expected` (Vitest diff rendering)
 
 ## Install
 
@@ -23,10 +29,9 @@ installVitestSemanticExpect();
 
 ## Usage
 
-Same `defineClassMatchers` / `expect.extend` API as Jest:
-
 ```typescript
 expect(user).toHaveEmail('alice@example.com');
+await expect(Promise.resolve(user)).resolves.toHaveEmail('alice@example.com');
 ```
 
 ## Docs

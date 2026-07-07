@@ -2,7 +2,7 @@
   "name": "semantic-matchers",
   "private": true,
   "version": "0.0.0",
-  "description": "Class-scoped custom matchers with prototype-chain resolution — framework-agnostic core with thin runner adapters.",
+  "description": "Class-scoped, type-specific custom matchers for Jest and Vitest — customize expect with per-class dispatch, chainable .not/.resolves/.rejects.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dvegap95/semantic-matchers.git"
