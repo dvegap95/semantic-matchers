@@ -1,5 +1,13 @@
 # @semantic-matchers/jest
 
+## 0.1.1
+
+### Patch Changes
+
+- d35d24c: Broaden npm keywords, descriptions, and README problem statements for discoverability — class-scoped, type-specific, expect customization, and chainable matcher search terms.
+- Updated dependencies [d35d24c]
+  - @semantic-matchers/core@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

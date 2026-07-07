@@ -1,6 +1,6 @@
 {
   "name": "@semantic-matchers/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Framework-agnostic class-scoped matchers for expect customization. Type-specific, prototype-chain dispatch — author once, plug into Jest, Vitest, or any expect host.",
   "sideEffects": false,
   "type": "module",

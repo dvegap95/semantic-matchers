@@ -1,6 +1,6 @@
 {
   "name": "@semantic-matchers/jest",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Customize expect with class-scoped matchers for Jest. Type-specific assertion dispatch on the prototype chain — chainable with .not, .resolves, and .rejects.",
   "sideEffects": false,
   "type": "module",
